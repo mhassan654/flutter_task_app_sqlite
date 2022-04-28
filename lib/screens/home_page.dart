@@ -1,7 +1,6 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, prefer_typing_uninitialized_variables
 import 'package:flutter/material.dart';
 import 'package:date_picker_timeline/date_picker_timeline.dart';
-
 import 'package:todo_using_sqlite/controllers/task_controller.dart';
 import 'package:todo_using_sqlite/models/task.dart';
 import 'package:todo_using_sqlite/screens/add_task_bar.dart';
@@ -61,10 +60,16 @@ class _HomePageState extends State<HomePage> {
             itemBuilder: (_, index){
               Task task = _taskController.taskList[index];
               print(task.toJson());
-
-
               if(task.repeat=='Daily')
                 {
+                  DateTime date = DateFormat.jm().parse(task.startTime.toString());
+                  print(date);
+                  var myTime = DateFormat("HH:mm").format(date);
+                  notifyHelper.scheduleNotification(
+                    int.parse(myTime.toString().split(":")[0]),
+                    int.parse(myTime.toString().split(":")[1]),
+                    task
+                  );
                   return
                     AnimationConfiguration.staggeredList(
                         position: index,
@@ -284,7 +289,7 @@ Get.bottomSheet(
         leading: GestureDetector(
           onTap: () {
             ThemeService().switchTheme();
-            notifyHelper.displayNotification(
+            notifyHelper.DisplayNotification(
                   body: Get.isDarkMode
                     ? "Activated Dark Theme"
                     : "Activated Light Theme",
